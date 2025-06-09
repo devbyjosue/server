@@ -8,6 +8,8 @@ using RolesApi.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using RolesApi.Services;
 using Microsoft.AspNetCore.Cors;
+using System.Text.Json;
+
 
 namespace RolesApi.Controllers
 {
@@ -40,9 +42,15 @@ namespace RolesApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Role>> CreateRole([FromBody] Role role)
+        public async Task<ActionResult<Role>> CreateRole(Role role)
         {
-            var newRole = await _rolesServices.CreateRole(role);
+            Console.WriteLine("Creating role: " + JsonSerializer.Serialize(role));
+            var mappedRole = new Role {
+                Name = role.Name,
+                CreatedAt = role.CreatedAt,
+                UpdatedAt = role.UpdatedAt
+            };
+            var newRole = await _rolesServices.CreateRole(mappedRole);
             return Ok(newRole);
         }
 

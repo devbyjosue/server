@@ -27,6 +27,11 @@ namespace UserApi.Services
         }
         public async Task<User> CreateUser(User user)
         {
+            var alreadyUser = await _context.Users.FirstOrDefaultAsync( x => x.Name == user.Name);
+            if (alreadyUser != null)
+            {
+                throw new Exception("User already exists");
+            }
             _context.Users.Add(user);
             
             await _context.SaveChangesAsync();

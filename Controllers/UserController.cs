@@ -36,9 +36,17 @@ namespace UserApi.Controllers
             return Ok(user);
         }
         [HttpPost]
-        public async Task<ActionResult<User>> CreateUser([FromBody] User user)
+        public async Task<ActionResult<User>> CreateUser( User user)
         {
-            var newUser = await _userServices.CreateUser(user);
+            var userDTO = new User
+            {
+                Name = user.Name,
+                Voucher = user.Voucher,
+                RoleId = user.RoleId,
+                CreatedAt = user.CreatedAt,
+                UpdatedAt = user.UpdatedAt
+            };
+            var newUser = await _userServices.CreateUser(userDTO);
             return Ok(newUser);
         }
 
