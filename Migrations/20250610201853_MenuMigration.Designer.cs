@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Server.Data;
 
@@ -11,9 +12,11 @@ using Server.Data;
 namespace server.Migrations
 {
     [DbContext(typeof(ServerDbContext))]
-    partial class ServerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250610201853_MenuMigration")]
+    partial class MenuMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -74,29 +77,6 @@ namespace server.Migrations
                             Name = "Sales",
                             UpdatedAt = new DateTime(2025, 6, 5, 12, 0, 0, 0, DateTimeKind.Unspecified)
                         });
-                });
-
-            modelBuilder.Entity("MenuRoleApi.Models.MenuRole", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<long>("MenuId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("RoleId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MenuId");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("MenuRoles");
                 });
 
             modelBuilder.Entity("RolesApi.Models.Role", b =>
@@ -250,35 +230,6 @@ namespace server.Migrations
                             UpdatedAt = new DateTime(2025, 6, 5, 12, 0, 0, 0, DateTimeKind.Unspecified),
                             Voucher = "nosecual"
                         });
-                });
-
-            modelBuilder.Entity("MenuRoleApi.Models.MenuRole", b =>
-                {
-                    b.HasOne("MenuApi.Models.Menu", "Menu")
-                        .WithMany("MenuRoles")
-                        .HasForeignKey("MenuId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("RolesApi.Models.Role", "Role")
-                        .WithMany("MenuRoles")
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Menu");
-
-                    b.Navigation("Role");
-                });
-
-            modelBuilder.Entity("MenuApi.Models.Menu", b =>
-                {
-                    b.Navigation("MenuRoles");
-                });
-
-            modelBuilder.Entity("RolesApi.Models.Role", b =>
-                {
-                    b.Navigation("MenuRoles");
                 });
 #pragma warning restore 612, 618
         }

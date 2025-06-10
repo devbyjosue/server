@@ -25,6 +25,11 @@ namespace RolesApi.Controllers
         [HttpGet]
         public async Task<ActionResult<List<Role>>> GetRoles()
         {
+            
+            var results = new List<Dictionary<string, object>>();
+
+
+            
             var roles = await _rolesServices.GetRoles();
             return Ok(roles);
         }
@@ -44,12 +49,16 @@ namespace RolesApi.Controllers
         [HttpPost]
         public async Task<ActionResult<Role>> CreateRole(Role role)
         {
-            Console.WriteLine("Creating role: " + JsonSerializer.Serialize(role));
             var mappedRole = new Role {
                 Name = role.Name,
                 CreatedAt = role.CreatedAt,
                 UpdatedAt = role.UpdatedAt
             };
+            var roles = await _rolesServices.GetRoles();
+            if (roles.Any(x => x.Name == role.Name))
+            {
+                return BadRequest("Role with this name already exists.");
+            }
             var newRole = await _rolesServices.CreateRole(mappedRole);
             return Ok(newRole);
         }

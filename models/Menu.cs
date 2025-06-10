@@ -5,15 +5,15 @@ using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 using MenuRoleApi.Models;
 
-namespace RolesApi.Models
+namespace MenuApi.Models
 {
-    public class Role
+    public class Menu
     {
         [Key]
         public long Id { get; set; }
-        
+
         [Required]
-        [StringLength(100)]
+        [StringLength(50)]
         public string Name { get; set; }
         public ICollection<MenuRole>? MenuRoles { get; set; }
 

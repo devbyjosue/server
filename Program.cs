@@ -4,6 +4,8 @@ using UserApi.Services;
 using UserApi.Services.Interfaces;
 using RolesApi.Services;
 using RolesApi.Services.Interfaces;
+using MenuApi.Services;
+using MenuApi.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +29,7 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddScoped<IUserServices, UserServices>();
 builder.Services.AddScoped<IRolesServices, RolesServices>();
+builder.Services.AddScoped<IMenuServices, MenuServices>();
 
 builder.Services.AddDbContext<ServerDbContext>(options =>
 {

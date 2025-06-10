@@ -6,6 +6,8 @@ using UserApi.Models;
 using UserApi.Services.Interfaces;
 using Server.Data;
 using Microsoft.EntityFrameworkCore;
+using UserApi.Dto;
+
 
 namespace UserApi.Services
 {
@@ -17,21 +19,35 @@ namespace UserApi.Services
             _context = context;
         }
 
-        public async Task<List<User>> GetUsers()
+        public async Task<List<UserDto>> GetUsers()
         {
-            return await _context.Users.ToListAsync();
+            return await _context.Users
+                .Join(_context.Roles,
+                user => user.RoleId,
+                role => role.Id,
+                (user, role)=> new UserDto 
+                {
+                    Id = user.Id,
+                    Name = user.Name,
+                    Voucher = user.Voucher,
+                    RoleName = role.Name,
+                    CreatedAt = user.CreatedAt,
+                    UpdatedAt = user.UpdatedAt
+                }).ToListAsync();
         }
         public async Task<User> GetUser(long id)
         {
             return await _context.Users.FindAsync(id);
         }
+        
+        public async Task<User> GetUserByName(string name)
+        {
+            return await _context.Users.FirstOrDefaultAsync(x => x.Name == name);
+        }
+        
         public async Task<User> CreateUser(User user)
         {
-            var alreadyUser = await _context.Users.FirstOrDefaultAsync( x => x.Name == user.Name);
-            if (alreadyUser != null)
-            {
-                throw new Exception("User already exists");
-            }
+            
             _context.Users.Add(user);
             
             await _context.SaveChangesAsync();

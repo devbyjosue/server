@@ -8,6 +8,8 @@ using UserApi.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using UserApi.Services;
 using Microsoft.AspNetCore.Cors;
+using UserApi.Dto;
+
 
 namespace UserApi.Controllers
 {
@@ -23,7 +25,7 @@ namespace UserApi.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<User>>> GetUsers()
+        public async Task<ActionResult<List<UserDto>>> GetUsers()
         {
             var users = await _userServices.GetUsers();
             return Ok(users);
@@ -35,6 +37,14 @@ namespace UserApi.Controllers
             var user = await _userServices.GetUser(id);
             return Ok(user);
         }
+
+        [HttpGet("userName/{name}")]
+        public async Task<ActionResult<User>> GetUserByName(string name)
+        {
+            var user = await _userServices.GetUserByName(name);
+            return Ok(user);
+        }
+
         [HttpPost]
         public async Task<ActionResult<User>> CreateUser( User user)
         {
@@ -46,6 +56,15 @@ namespace UserApi.Controllers
                 CreatedAt = user.CreatedAt,
                 UpdatedAt = user.UpdatedAt
             };
+
+            var users = await _userServices.GetUsers();
+
+            if (users.Any(x => x.Name == user.Name))
+            {
+                return BadRequest(new { error = "User already exists"});
+            }
+
+           
             var newUser = await _userServices.CreateUser(userDTO);
             return Ok(newUser);
         }
