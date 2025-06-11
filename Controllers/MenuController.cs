@@ -47,6 +47,19 @@ namespace MenuApi.Controllers
             return Ok(menusWithRoles);
         }
 
+        public class RoleUpdateRequest
+        {
+            public List<string> Roles { get; set; }
+        }
+
+        [HttpPut("menu-roles/{id}")]
+        public async Task<ActionResult<Menu>> UpdateMenusWithRoles(long id, RoleUpdateRequest request)
+        {
+            var updatedMenu = await _menuServices.UpdateMenusWithRoles(id, request.Roles);
+            return updatedMenu == null ? NotFound(new { error = "Menu not found" }) : Ok(updatedMenu);
+
+        }
+
         [HttpPost]
         public async Task<ActionResult<Menu>> CreateMenu([FromBody] Menu menu)
         {

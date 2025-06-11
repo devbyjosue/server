@@ -6,6 +6,8 @@ using MenuApi.Models;
 using MenuApi.Services.Interfaces;
 using Server.Data;
 using Microsoft.EntityFrameworkCore;
+using MenuRoleApi.Models;
+using System.Text.Json;
 
 
 namespace MenuApi.Services
@@ -45,6 +47,30 @@ namespace MenuApi.Services
                 })
                 .ToListAsync();
             return menusWithRoles;
+        }
+        public async Task<Menu> UpdateMenusWithRoles(long id, List<string> roles)
+        {
+            var menu = await _context.Menus
+                    .Include(m => m.MenuRoles)
+                    .FirstOrDefaultAsync(m => m.Id == id);
+            if (menu == null) return null;
+
+            menu.MenuRoles.Clear();
+
+            Console.WriteLine("--------------------------------------------------------------------------------");
+            // Console.WriteLine(role, roles);
+            foreach (var roleName in roles)
+            {
+                var role = await _context.Roles.FirstOrDefaultAsync(r => r.Name == roleName);
+
+                if (role != null)
+                {
+                    menu.MenuRoles.Add(new MenuRole { RoleId = role.Id, MenuId = menu.Id });
+                }
+            }
+
+            await _context.SaveChangesAsync();
+            return menu;
         }
 
 
