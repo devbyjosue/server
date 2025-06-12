@@ -13,7 +13,7 @@ namespace MenuApi.Services.Interfaces
         Task<Menu> GetMenuByName(string name);
         
         Task<IEnumerable<object>> GetMenusWithRoles();
-        Task<Menu> UpdateMenusWithRoles(long id, List<string> roles);
+        Task<object> UpdateMenusWithRoles(long id, bool canView, bool canEdit);
 
         Task<Menu> CreateMenu(Menu menu);
         Task<Menu> UpdateMenu(long id, Menu menu);

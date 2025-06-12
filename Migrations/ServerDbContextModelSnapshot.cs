@@ -44,36 +44,6 @@ namespace server.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Menus");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1L,
-                            CreatedAt = new DateTime(2025, 6, 5, 12, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Roles",
-                            UpdatedAt = new DateTime(2025, 6, 5, 12, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 2L,
-                            CreatedAt = new DateTime(2025, 6, 5, 12, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Admin",
-                            UpdatedAt = new DateTime(2025, 6, 5, 12, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 3L,
-                            CreatedAt = new DateTime(2025, 6, 5, 12, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Home",
-                            UpdatedAt = new DateTime(2025, 6, 5, 12, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 4L,
-                            CreatedAt = new DateTime(2025, 6, 5, 12, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Sales",
-                            UpdatedAt = new DateTime(2025, 6, 5, 12, 0, 0, 0, DateTimeKind.Unspecified)
-                        });
                 });
 
             modelBuilder.Entity("MenuRoleApi.Models.MenuRole", b =>
@@ -89,6 +59,12 @@ namespace server.Migrations
 
                     b.Property<long>("RoleId")
                         .HasColumnType("bigint");
+
+                    b.Property<bool>("canEdit")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("canView")
+                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
@@ -121,22 +97,6 @@ namespace server.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Roles");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1L,
-                            CreatedAt = new DateTime(2025, 6, 5, 12, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Admin",
-                            UpdatedAt = new DateTime(2025, 6, 5, 12, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 2L,
-                            CreatedAt = new DateTime(2025, 6, 5, 12, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "User",
-                            UpdatedAt = new DateTime(2025, 6, 5, 12, 0, 0, 0, DateTimeKind.Unspecified)
-                        });
                 });
 
             modelBuilder.Entity("SalesApi.Dto.SalesOrderHeader", b =>
@@ -221,35 +181,6 @@ namespace server.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1L,
-                            CreatedAt = new DateTime(2025, 6, 5, 12, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Josue",
-                            RoleId = 2L,
-                            UpdatedAt = new DateTime(2025, 6, 5, 12, 0, 0, 0, DateTimeKind.Unspecified),
-                            Voucher = "v81137"
-                        },
-                        new
-                        {
-                            Id = 2L,
-                            CreatedAt = new DateTime(2025, 6, 5, 12, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Ricardo",
-                            RoleId = 1L,
-                            UpdatedAt = new DateTime(2025, 6, 5, 12, 0, 0, 0, DateTimeKind.Unspecified),
-                            Voucher = "nosecual"
-                        },
-                        new
-                        {
-                            Id = 3L,
-                            CreatedAt = new DateTime(2025, 6, 5, 12, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Daniel",
-                            RoleId = 2L,
-                            UpdatedAt = new DateTime(2025, 6, 5, 12, 0, 0, 0, DateTimeKind.Unspecified),
-                            Voucher = "nosecual"
-                        });
                 });
 
             modelBuilder.Entity("MenuRoleApi.Models.MenuRole", b =>

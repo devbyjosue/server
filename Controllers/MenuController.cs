@@ -49,13 +49,15 @@ namespace MenuApi.Controllers
 
         public class RoleUpdateRequest
         {
-            public List<string> Roles { get; set; }
+            public int id { get; set; }
+            public Boolean canView { get; set; }
+            public Boolean canEdit { get; set; }
         }
 
         [HttpPut("menu-roles/{id}")]
-        public async Task<ActionResult<Menu>> UpdateMenusWithRoles(long id, RoleUpdateRequest request)
+        public async Task<ActionResult<object>> UpdateMenusWithRoles(long id, RoleUpdateRequest request)
         {
-            var updatedMenu = await _menuServices.UpdateMenusWithRoles(id, request.Roles);
+            var updatedMenu = await _menuServices.UpdateMenusWithRoles(request.id, request.canView, request.canEdit);
             return updatedMenu == null ? NotFound(new { error = "Menu not found" }) : Ok(updatedMenu);
 
         }

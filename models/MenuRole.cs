@@ -21,5 +21,8 @@ namespace MenuRoleApi.Models
 
         [JsonIgnore]
         public Role Role { get; set; }
+
+        public bool canView { get; set; }
+        public bool canEdit { get; set; }
     }
 }

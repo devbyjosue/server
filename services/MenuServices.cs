@@ -23,10 +23,7 @@ namespace MenuApi.Services
         {
             return await _context.Menus.ToListAsync();
         }
-        // public async Task<Menu> GetMenu(long id)
-        // {
-        //     return await _context.Menus.FindAsync(id);
-        // }
+       
         public async Task<Menu> GetMenuByName(string name)
         {
             return await _context.Menus.FirstOrDefaultAsync(x => x.Name == name);
@@ -34,43 +31,104 @@ namespace MenuApi.Services
 
         public async Task<IEnumerable<object>> GetMenusWithRoles()
         {
-            var menusWithRoles = await _context.Menus
-                .Include(m => m.MenuRoles)
-                .ThenInclude(mr => mr.Role)
-                .Select(m => new 
-                { 
-                    m.Id, 
-                    m.Name, 
-                    Roles = (m.MenuRoles != null && m.MenuRoles.Any()) 
-                ? m.MenuRoles.Select(mr => mr.Role.Name).ToList() 
-                : new List<string>()
-                })
-                .ToListAsync();
+            // var firstMenuRoles = new MenuRole
+            // {
+            //     MenuId = 1,
+            //     RoleId = 2,
+            //     canView = true,
+            //     canEdit = true
+            // };
+            // _context.MenuRoles.Add(firstMenuRoles);
+            // await _context.SaveChangesAsync();
+            
+
+            
+            // var menusWithRoles = await _context.Menus
+            //     .Include(m => m.MenuRoles)
+            //     .ThenInclude(mr => mr.Role)
+            //     .Select(m => new 
+            //     { 
+            //         m.Id, 
+            //         m.Name, 
+            //         Roles = (m.MenuRoles != null && m.MenuRoles.Any()) 
+            //     ? m.MenuRoles.Select(mr => mr.Role.Name).ToList() 
+            //     : new List<string>(),
+            //         CanView = m.MenuRoles.Any(mr => mr.canView),
+            //         CanEdit = m.MenuRoles.Any(mr => mr.canEdit)
+            //     })
+            //     .ToListAsync();
+
+            var menusWithRoles = await _context.MenuRoles
+                .Select(mr => new 
+                {
+                    mr.Id,
+                    mr.MenuId,
+                    MenuName = mr.Menu.Name,
+                    RoleName = mr.Role.Name,
+                    RoleId = mr.RoleId,
+                    mr.canView,
+                    mr.canEdit
+                }).ToListAsync();
+
+        // Console.WriteLine("----------------------------------------------------");
+        //     foreach (var menuRole in menusWithRoles)
+        //     {
+        //         Console.WriteLine($"Id {menuRole.Id}");
+        //         Console.WriteLine($"Menu {menuRole.MenuName}");
+        //         Console.WriteLine($"Role {menuRole.RoleName}");
+        //         Console.WriteLine($"canView {menuRole.canView}");
+        //         Console.WriteLine($"canEdit {menuRole.canEdit}");
+        //     }
+
+
+
+// ----------------------------------------------------
+// Id 1
+// Menu Configuration
+// Role User
+// canView True
+// canEdit False
+// Id 2
+// Menu Home
+// Role User
+// canView True
+// canEdit True
+// Id 3
+// Menu IT
+// Role Admin
+// canView True
+// canEdit True
+// Id 4
+// Menu Home
+// Role Admin
+// canView True
+// canEdit False
+// Id 5
+// Menu Configuration
+// Role Admin
+// canView True
+// canEdit True
             return menusWithRoles;
         }
-        public async Task<Menu> UpdateMenusWithRoles(long id, List<string> roles)
+        public async Task<object> UpdateMenusWithRoles(long id, bool canView, bool canEdit)
         {
-            var menu = await _context.Menus
-                    .Include(m => m.MenuRoles)
-                    .FirstOrDefaultAsync(m => m.Id == id);
-            if (menu == null) return null;
 
-            menu.MenuRoles.Clear();
+            var MenuRoles = await _context.MenuRoles.Where(mr => mr.Id == id).ToListAsync();
 
-            Console.WriteLine("--------------------------------------------------------------------------------");
-            // Console.WriteLine(role, roles);
-            foreach (var roleName in roles)
+            Console.WriteLine("----------------------------------------------------");
+            foreach (var menuRole in MenuRoles)
             {
-                var role = await _context.Roles.FirstOrDefaultAsync(r => r.Name == roleName);
+                Console.WriteLine($"Id {menuRole.Id}");
+                Console.WriteLine($"Menu {menuRole.MenuId}");
+                Console.WriteLine($"Role {menuRole.RoleId}");
+                Console.WriteLine($"canView {menuRole.canView} {canView}");
+                Console.WriteLine($"canEdit {menuRole.canEdit} {canEdit}");
 
-                if (role != null)
-                {
-                    menu.MenuRoles.Add(new MenuRole { RoleId = role.Id, MenuId = menu.Id });
-                }
+                menuRole.canView = canView;
+                menuRole.canEdit = canEdit;
             }
-
             await _context.SaveChangesAsync();
-            return menu;
+            return MenuRoles;
         }
 
 
