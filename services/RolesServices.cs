@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using RolesApi.Models;
+using MenuApi.Models;
+using MenuRoleApi.Models;
 using RolesApi.Services.Interfaces;
 using Server.Data;
 using Microsoft.EntityFrameworkCore;
@@ -32,8 +34,24 @@ namespace RolesApi.Services
         public async Task<Role> CreateRole(Role role)
         {
             
+            
+            
             _context.Roles.Add(role);
             await _context.SaveChangesAsync();
+            
+            
+            // var menus = await _context.Menus.ToListAsync();
+            // foreach (var menu in menus)
+            // {
+            //     _context.MenuRoles.Add(new MenuRole
+            //     {
+            //         MenuId = menu.Id,
+            //         RoleId = role.Id,
+            //         canView = false,
+            //         canEdit = false
+            //     });
+            // }
+            
             return role;
         }
         public async Task<Role> UpdateRole(long id, Role role)

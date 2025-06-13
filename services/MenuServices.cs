@@ -34,29 +34,13 @@ namespace MenuApi.Services
             // var firstMenuRoles = new MenuRole
             // {
             //     MenuId = 1,
-            //     RoleId = 2,
-            //     canView = true,
-            //     canEdit = true
+            //     RoleId = 3,
+            //     canView = false,
+            //     canEdit = false
             // };
             // _context.MenuRoles.Add(firstMenuRoles);
             // await _context.SaveChangesAsync();
             
-
-            
-            // var menusWithRoles = await _context.Menus
-            //     .Include(m => m.MenuRoles)
-            //     .ThenInclude(mr => mr.Role)
-            //     .Select(m => new 
-            //     { 
-            //         m.Id, 
-            //         m.Name, 
-            //         Roles = (m.MenuRoles != null && m.MenuRoles.Any()) 
-            //     ? m.MenuRoles.Select(mr => mr.Role.Name).ToList() 
-            //     : new List<string>(),
-            //         CanView = m.MenuRoles.Any(mr => mr.canView),
-            //         CanEdit = m.MenuRoles.Any(mr => mr.canEdit)
-            //     })
-            //     .ToListAsync();
 
             var menusWithRoles = await _context.MenuRoles
                 .Select(mr => new 
@@ -70,44 +54,7 @@ namespace MenuApi.Services
                     mr.canEdit
                 }).ToListAsync();
 
-        // Console.WriteLine("----------------------------------------------------");
-        //     foreach (var menuRole in menusWithRoles)
-        //     {
-        //         Console.WriteLine($"Id {menuRole.Id}");
-        //         Console.WriteLine($"Menu {menuRole.MenuName}");
-        //         Console.WriteLine($"Role {menuRole.RoleName}");
-        //         Console.WriteLine($"canView {menuRole.canView}");
-        //         Console.WriteLine($"canEdit {menuRole.canEdit}");
-        //     }
-
-
-
-// ----------------------------------------------------
-// Id 1
-// Menu Configuration
-// Role User
-// canView True
-// canEdit False
-// Id 2
-// Menu Home
-// Role User
-// canView True
-// canEdit True
-// Id 3
-// Menu IT
-// Role Admin
-// canView True
-// canEdit True
-// Id 4
-// Menu Home
-// Role Admin
-// canView True
-// canEdit False
-// Id 5
-// Menu Configuration
-// Role Admin
-// canView True
-// canEdit True
+      
             return menusWithRoles;
         }
         public async Task<object> UpdateMenusWithRoles(long id, bool canView, bool canEdit)
