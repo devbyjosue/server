@@ -56,7 +56,8 @@ namespace SalesApi.Controllers
             //                             .ToListAsync();
 
 
-            var headers = await _context.SalesOrderHeaders.ToListAsync();
+            var headers = await _context.Products.ToListAsync();
+            
 
             return Ok(headers);
 
