@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using RolesApi.Models;
+using server.Models;
 using RolesApi.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
-using RolesApi.Services;
 using Microsoft.AspNetCore.Cors;
 using System.Text.Json;
 

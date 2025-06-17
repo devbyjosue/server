@@ -4,15 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using SalesApi.Dto;
-using SalesDetailApi.Dto;
+using server.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Server.Data;
 using SalesOrderRequestApi.Dto;
-using ProductApi.Dto;
-using SaleCustomerApi.Dto;
-using PersonApi.Dto;
 using Microsoft.Data.SqlClient;
 
 
@@ -30,34 +26,37 @@ namespace SalesApi.Controllers
         [HttpGet]
         public async Task<ActionResult> GetSalesOrders()
         {
-            string sqlQuery = @"
-                SELECT 
-                SalesOrderId,
-                RevisionNumber,
-                OrderDate,
-                DueDate,
-                ShipDate,
-                Status,
-                SalesOrderNumber,
-                PurchaseOrderNumber,
-                AccountNumber,
-                CustomerID,
+            // string sqlQuery = @"
+            //     SELECT 
+            //     SalesOrderId,
+            //     RevisionNumber,
+            //     OrderDate,
+            //     DueDate,
+            //     ShipDate,
+            //     Status,
+            //     SalesOrderNumber,
+            //     PurchaseOrderNumber,
+            //     AccountNumber,
+            //     CustomerID,
                 
-                SubTotal,
-                TaxAmt,
-                Freight,
-                TotalDue,
-                Comment,
-                rowguid,
-                ModifiedDate
-                FROM [AdventureWorks2016Test].[Sales].[SalesOrderHeader]";
+            //     SubTotal,
+            //     TaxAmt,
+            //     Freight,
+            //     TotalDue,
+            //     Comment,
+            //     rowguid,
+            //     ModifiedDate
+            //     FROM [AdventureWorks2016Test].[Sales].[SalesOrderHeader]";
 
 
 
-            var headers = await _context.Set<SalesOrderHeader>()
-                                        .FromSqlRaw(sqlQuery)
-                                        .AsNoTracking()    
-                                        .ToListAsync();
+            // var headers = await _context.Set<SalesOrderHeader>()
+            //                             .FromSqlRaw(sqlQuery)
+            //                             .AsNoTracking()    
+            //                             .ToListAsync();
+
+
+            var headers = await _context.SalesOrderHeaders.ToListAsync();
 
             return Ok(headers);
 

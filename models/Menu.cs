@@ -1,23 +1,17 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.ComponentModel.DataAnnotations;
-using MenuRoleApi.Models;
 
-namespace MenuApi.Models
+namespace server.Models;
+
+public partial class Menu
 {
-    public class Menu
-    {
-        [Key]
-        public long Id { get; set; }
+    public long Id { get; set; }
 
-        [Required]
-        [StringLength(50)]
-        public string Name { get; set; }
-        public ICollection<MenuRole>? MenuRoles { get; set; }
+    public string Name { get; set; } = null!;
 
-        public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
-    }
+    public DateTime CreatedAt { get; set; }
+
+    public DateTime UpdatedAt { get; set; }
+
+    public virtual ICollection<MenuRole> MenuRoles { get; set; } = new List<MenuRole>();
 }

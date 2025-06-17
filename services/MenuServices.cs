@@ -2,11 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using MenuApi.Models;
+using server.Models;
 using MenuApi.Services.Interfaces;
 using Server.Data;
 using Microsoft.EntityFrameworkCore;
-using MenuRoleApi.Models;
 using System.Text.Json;
 
 
@@ -50,8 +49,8 @@ namespace MenuApi.Services
                     MenuName = mr.Menu.Name,
                     RoleName = mr.Role.Name,
                     RoleId = mr.RoleId,
-                    mr.canView,
-                    mr.canEdit
+                    mr.CanView,
+                    mr.CanEdit
                 }).ToListAsync();
 
       
@@ -68,11 +67,11 @@ namespace MenuApi.Services
                 Console.WriteLine($"Id {menuRole.Id}");
                 Console.WriteLine($"Menu {menuRole.MenuId}");
                 Console.WriteLine($"Role {menuRole.RoleId}");
-                Console.WriteLine($"canView {menuRole.canView} {canView}");
-                Console.WriteLine($"canEdit {menuRole.canEdit} {canEdit}");
+                Console.WriteLine($"canView {menuRole.CanView} {canView}");
+                Console.WriteLine($"canEdit {menuRole.CanEdit} {canEdit}");
 
-                menuRole.canView = canView;
-                menuRole.canEdit = canEdit;
+                menuRole.CanView = canView;
+                menuRole.CanEdit = canEdit;
             }
             await _context.SaveChangesAsync();
             return MenuRoles;

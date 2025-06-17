@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using UserApi.Models;
+using server.Models;
 using UserApi.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using UserApi.Services;

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using UserApi.Models;
+using server.Models;
 using UserApi.Services.Interfaces;
 using Server.Data;
 using Microsoft.EntityFrameworkCore;

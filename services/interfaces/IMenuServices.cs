@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using MenuApi.Models;
+using server.Models;
 
 namespace MenuApi.Services.Interfaces
 {

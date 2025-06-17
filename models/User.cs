@@ -1,28 +1,19 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.ComponentModel.DataAnnotations;
 
+namespace server.Models;
 
-namespace UserApi.Models
+public partial class User
 {
-    public class User
-    {
-        [Key]
-        public long Id { get; set; }
+    public long Id { get; set; }
 
-        [Required]
-        [StringLength(100)]
-        public string Name { get; set; }
+    public string Name { get; set; } = null!;
 
-        [Required]
-        [StringLength(100)]
-        public string Voucher { get; set; }
+    public string Voucher { get; set; } = null!;
 
-        [Required]
-        public long RoleId { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
-    }
+    public long RoleId { get; set; }
+
+    public DateTime CreatedAt { get; set; }
+
+    public DateTime UpdatedAt { get; set; }
 }

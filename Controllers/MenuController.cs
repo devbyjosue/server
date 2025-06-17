@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using MenuApi.Models;
+using server.Models;
 using MenuApi.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
-using MenuApi.Services;
 
 namespace MenuApi.Controllers
 {
