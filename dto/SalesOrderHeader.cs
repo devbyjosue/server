@@ -8,8 +8,8 @@ namespace SalesApi.Dto
 {
     public class SalesOrderHeader
     {
-    public int SalesOrderId { get; set; }
-    public byte RevisionNumber { get; set; }
+    public int? SalesOrderID { get; set; }
+    public byte? RevisionNumber { get; set; }
     public DateTime? OrderDate { get; set; }
     public DateTime? DueDate { get; set; }
     public DateTime? ShipDate { get; set; }
@@ -17,7 +17,7 @@ namespace SalesApi.Dto
     public string? SalesOrderNumber { get; set; }
     public string? PurchaseOrderNumber { get; set; }
     public string? AccountNumber { get; set; } 
-    // public int? CustomerId { get; set; }
+    public int? CustomerID { get; set; }
     // public int? SalesPersonId { get; set; }
     // public int? TerritoryId { get; set; }
     // public int? BillToAddressId { get; set; }

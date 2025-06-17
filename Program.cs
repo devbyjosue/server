@@ -6,16 +6,20 @@ using RolesApi.Services;
 using RolesApi.Services.Interfaces;
 using MenuApi.Services;
 using MenuApi.Services.Interfaces;
+using Microsoft.AspNetCore.Authentication.Negotiate;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddCors(options => {     
-options.AddPolicy("AllowSpecificOrigins", policy =>     {  
-       policy.WithOrigins("http://localhost:4200")   
-        .AllowAnyHeader()       
-        .AllowAnyMethod();   
-  });
- }); 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigins", policy =>
+    {
+        policy.WithOrigins("http://localhost:4200")
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials(); 
+    });
+});
 
 // Add services to the container.
 
@@ -36,6 +40,8 @@ builder.Services.AddDbContext<ServerDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
+builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme)
+    .AddNegotiate();
 
 var app = builder.Build();
 
@@ -47,12 +53,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseCors(
-    options => options.WithOrigins("http://localhost:4200")
-        .AllowAnyHeader()
-        .AllowAnyMethod()
-);
+app.UseCors("AllowSpecificOrigins");
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

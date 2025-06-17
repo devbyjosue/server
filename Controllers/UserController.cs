@@ -13,6 +13,7 @@ using UserApi.Dto;
 
 namespace UserApi.Controllers
 {
+    
     [Route("api/users")]
     [ApiController]
     public class UserController : ControllerBase
@@ -27,6 +28,10 @@ namespace UserApi.Controllers
         [HttpGet]
         public async Task<ActionResult<List<UserDto>>> GetUsers()
         {
+            string username = HttpContext.User.Identity.Name;
+
+            Console.WriteLine($"Authenticated user: {username}");
+
             var users = await _userServices.GetUsers();
             return Ok(users);
         }
@@ -34,6 +39,7 @@ namespace UserApi.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUser(long id)
         {
+
             var user = await _userServices.GetUser(id);
             return Ok(user);
         }

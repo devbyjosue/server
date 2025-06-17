@@ -18,6 +18,15 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
+    },
+  "iisSettings": {
+    "commandName": "IISExpress",
+    "windowsAuthentication": true,
+    "anonymousAuthentication": false,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:7216",
+      "sslPort": 0 
     }
+  }
   }
 }

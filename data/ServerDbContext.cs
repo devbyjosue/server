@@ -14,6 +14,8 @@ using MenuApi.Services.Interfaces;
 using MenuRoleApi.Models;
 using SalesDetailApi.Dto;
 using ProductApi.Dto;
+using SaleCustomerApi.Dto;
+using PersonApi.Dto;
 
 
 
@@ -25,6 +27,8 @@ namespace Server.Data
         public DbSet<Role> Roles { get; set; }
         public DbSet<SalesOrderHeader> SalesOrderHeaders => Set<SalesOrderHeader>();
         public DbSet<SalesOrderDetail> SalesOrderDetails => Set<SalesOrderDetail>();
+        public DbSet<SaleCustomer> SaleCustomers => Set<SaleCustomer>();
+        public DbSet<Person> Persons => Set<Person>();
         public DbSet<Product> Products => Set<Product>();
         public DbSet<Menu> Menus { get; set; }
         public DbSet<MenuRole> MenuRoles { get; set; }
@@ -47,6 +51,8 @@ namespace Server.Data
 
             modelBuilder.Entity<SalesOrderHeader>().HasNoKey().ToView(null);
             modelBuilder.Entity<SalesOrderDetail>().HasNoKey().ToView(null);
+            modelBuilder.Entity<SaleCustomer>().HasNoKey().ToView(null);
+            modelBuilder.Entity<Person>().HasNoKey().ToView(null);
 
             // modelBuilder.Entity<RoleMenu>().HasData(
             //     new RoleMenu { Id = 1, RoleId = 1, MenuId = 1, CreatedAt = createdAt, UpdatedAt = createdAt },
