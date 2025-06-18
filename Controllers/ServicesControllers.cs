@@ -4,16 +4,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using SalesApi.Dto;
-using SalesDetailApi.Dto;
+// using SalesApi.Dto;
+// using SalesDetailApi.Dto;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Server.Data;
 using SalesOrderRequestApi.Dto;
-using ProductApi.Dto;
-using SaleCustomerApi.Dto;
+// using ProductApi.Dto;
+// using SaleCustomerApi.Dto;
 using PersonApi.Dto;
 using Microsoft.Data.SqlClient;
+using server.Models;
 
 
 namespace SalesApi.Controllers
@@ -30,34 +31,27 @@ namespace SalesApi.Controllers
         [HttpGet]
         public async Task<ActionResult> GetSalesOrders()
         {
-            string sqlQuery = @"
-                SELECT 
-                SalesOrderId,
-                RevisionNumber,
-                OrderDate,
-                DueDate,
-                ShipDate,
-                Status,
-                SalesOrderNumber,
-                PurchaseOrderNumber,
-                AccountNumber,
-                CustomerID,
-                
-                SubTotal,
-                TaxAmt,
-                Freight,
-                TotalDue,
-                Comment,
-                rowguid,
-                ModifiedDate
-                FROM [AdventureWorks2016Test].[Sales].[SalesOrderHeader]";
+            var headers = await _context.SalesOrderHeaders.Select(h => new {
+                h.SalesOrderID,
+                h.RevisionNumber,
+                h.OrderDate,
+                h.DueDate,
+                h.ShipDate,
+                h.Status,
+                h.SalesOrderNumber,
+                h.PurchaseOrderNumber,
+                h.AccountNumber,
+                h.CustomerID,
+                h.SubTotal,
+                h.TaxAmt,
+                h.Freight,
+                h.TotalDue,
+                h.Comment,
+                h.rowguid,
+                h.ModifiedDate
+            })
+            .ToListAsync();
 
-
-
-            var headers = await _context.Set<SalesOrderHeader>()
-                                        .FromSqlRaw(sqlQuery)
-                                        .AsNoTracking()    
-                                        .ToListAsync();
 
             return Ok(headers);
 
@@ -71,68 +65,59 @@ namespace SalesApi.Controllers
             {
                 return BadRequest("Sales order header cannot be null.");
             }
-            var insertedIdParameter = new SqlParameter
-                {
-                    ParameterName = "@InsertedId", 
-                    SqlDbType = SqlDbType.Int, 
-                    Direction = ParameterDirection.Output
-                };
-
-                    string insertHeaderQuery = @"
-                    INSERT INTO Sales.SalesOrderHeader (
-                        RevisionNumber, OrderDate, DueDate, ShipDate, Status, OnlineOrderFlag, 
-                        PurchaseOrderNumber, AccountNumber, CustomerID, SalesPersonID, 
-                        TerritoryID, BillToAddressID, ShipToAddressID, ShipMethodID, CreditCardID, 
-                        CreditCardApprovalCode, CurrencyRateID, SubTotal, TaxAmt, Freight, Comment, rowguid, ModifiedDate
-                    )
-                    VALUES (
-                        1, @OrderDate, @DueDate, NULL, 1, 1, 
-                        NULL, 'ACC12345', @CustomerID, 282, 5, @BillToAddressID, 5, 5, 5, 
-                        5, 5, 50000.00, 1567.82, 90.00, 'Test Order', NEWID(), @ModifiedDate
-                    );
-                    SET @InsertedId = SCOPE_IDENTITY(); 
-                ";
-
-          await _context.Database.ExecuteSqlRawAsync(insertHeaderQuery,
-                new SqlParameter("@OrderDate", salesOrderHeader.SalesOrderHeader.OrderDate),
-                new SqlParameter("@DueDate", salesOrderHeader.SalesOrderHeader.DueDate),
-                new SqlParameter("@CustomerID", salesOrderHeader.SalesOrderHeader.CustomerID),
-                new SqlParameter("@BillToAddressID", 529),
-                new SqlParameter("@ModifiedDate", salesOrderHeader.SalesOrderHeader.ModifiedDate),
-                insertedIdParameter
-            );
-            int lastInsertedId = Convert.ToInt32(insertedIdParameter.Value); 
-
-            // var insertedId = await _context.SalesOrderHeaders
-            //         .OrderByDescending(x => x.SalesOrderID)
-            //         .Select(x => x.SalesOrderID)
-            //         .FirstOrDefaultAsync();
 
 
-            Console.WriteLine($"Inserted SalesOrderID --------------------------------------------------------------------------: {lastInsertedId}");
+        var newSOH = new SalesOrderHeader
+            {
+                RevisionNumber = salesOrderHeader.SalesOrderHeader.RevisionNumber,
+                OrderDate = salesOrderHeader.SalesOrderHeader.OrderDate,
+                DueDate = salesOrderHeader.SalesOrderHeader.DueDate,
+                ShipDate = salesOrderHeader.SalesOrderHeader.ShipDate,
+                Status = salesOrderHeader.SalesOrderHeader.Status,
+                OnlineOrderFlag = salesOrderHeader.SalesOrderHeader.OnlineOrderFlag,
+                SalesOrderNumber = salesOrderHeader.SalesOrderHeader.SalesOrderNumber,
+                PurchaseOrderNumber = salesOrderHeader.SalesOrderHeader.PurchaseOrderNumber,
+                AccountNumber = salesOrderHeader.SalesOrderHeader.AccountNumber,
+                CustomerID = salesOrderHeader.SalesOrderHeader.CustomerID,
+                SalesPersonID = salesOrderHeader.SalesOrderHeader.SalesPersonID,
+                TerritoryID = salesOrderHeader.SalesOrderHeader.TerritoryID,
+                BillToAddressID = salesOrderHeader.SalesOrderHeader.BillToAddressID,
+                ShipToAddressID = salesOrderHeader.SalesOrderHeader.ShipToAddressID,
+                ShipMethodID = salesOrderHeader.SalesOrderHeader.ShipMethodID,
+                CreditCardID = salesOrderHeader.SalesOrderHeader.CreditCardID,
+                CreditCardApprovalCode = salesOrderHeader.SalesOrderHeader.CreditCardApprovalCode,
+                CurrencyRateID = salesOrderHeader.SalesOrderHeader.CurrencyRateID,
+                SubTotal = salesOrderHeader.SalesOrderHeader.SubTotal,
+                TaxAmt = salesOrderHeader.SalesOrderHeader.TaxAmt,
+                Freight = salesOrderHeader.SalesOrderHeader.Freight,
+                TotalDue = salesOrderHeader.SalesOrderHeader.TotalDue,
+                Comment = salesOrderHeader.SalesOrderHeader.Comment,
+                rowguid = Guid.NewGuid(),
+                ModifiedDate = DateTime.UtcNow
+            };
 
-
+            _context.SalesOrderHeaders.Add(newSOH);
+            await _context.SaveChangesAsync();
 
             foreach (var detail in salesOrderHeader.SalesOrderDetail)
-                    {
-                        string insertDetailQuery = @"
-                            INSERT INTO Sales.SalesOrderDetail (SalesOrderID, CarrierTrackingNumber, OrderQty, ProductID, SpecialOfferID, UnitPrice, UnitPriceDiscount, ModifiedDate)
-                            VALUES (@SalesOrderID, @CarrierTrackingNumber, @OrderQty, @ProductID, @SpecialOfferID, @UnitPrice, @UnitPriceDiscount, @ModifiedDate);
-                        ";
-
-                        await _context.Database.ExecuteSqlRawAsync(insertDetailQuery,
-                            new SqlParameter("@SalesOrderID", lastInsertedId),
-                            new SqlParameter("@CarrierTrackingNumber", detail.CarrierTrackingNumber),
-                            new SqlParameter("@OrderQty", detail.OrderQty),
-                            new SqlParameter("@ProductID", detail.ProductId),
-                            new SqlParameter("@SpecialOfferID", detail.SpecialOfferId ?? 1),
-                            new SqlParameter("@UnitPrice", detail.UnitPrice),
-                            new SqlParameter("@UnitPriceDiscount", detail.UnitPriceDiscount),
-                            new SqlParameter("@LineTotal", detail.LineTotal),
-                            new SqlParameter("@ModifiedDate", detail.ModifiedDate)
-                        );
-                    }
-
+            {
+                var newDetail = new SalesOrderDetail
+                {
+                    SalesOrderID = newSOH.SalesOrderID,
+                    CarrierTrackingNumber = detail.CarrierTrackingNumber,
+                    OrderQty = detail.OrderQty,
+                    ProductID = detail.ProductID,
+                    SpecialOfferID = detail.SpecialOfferID,
+                    UnitPrice = detail.UnitPrice,
+                    UnitPriceDiscount = detail.UnitPriceDiscount,
+                    LineTotal = detail.LineTotal, 
+                };
+                newDetail.ModifiedDate = DateTime.UtcNow;
+            
+                _context.SalesOrderDetails.Add(newDetail);
+            }
+       
+                await _context.SaveChangesAsync();
                     return Ok();
         }
 
@@ -140,14 +125,19 @@ namespace SalesApi.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteSalesOrder(int id)
         {
-            string deleteHeaderQuery = @"
-                DELETE FROM Sales.SalesOrderHeader
-                WHERE SalesOrderID = @SalesOrderID;
-            ";
+            if (id <= 0)
+            {
+                return BadRequest("Invalid Sales Order ID.");
+            }
 
-            await _context.Database.ExecuteSqlRawAsync(deleteHeaderQuery,
-                new SqlParameter("@SalesOrderID", id)
-            );
+            var SOHToDelete = await _context.SalesOrderHeaders.Where(soh => soh.SalesOrderID == id)
+                .FirstOrDefaultAsync();
+                if (SOHToDelete == null)
+            {
+                return NotFound("Sales order not found.");
+            }
+            _context.SalesOrderHeaders.Remove(SOHToDelete);
+            await _context.SaveChangesAsync(); 
 
             return Ok("Sales order deleted successfully.");
         }
@@ -156,34 +146,33 @@ namespace SalesApi.Controllers
         [HttpGet("details/{id}")]
         public async Task<ActionResult> GetSalesOrdersDetail(int id)
         {
-            string sqlQuery = $@"
-                SELECT 
-                    SOD.SalesOrderId,
-                    SOD.SalesOrderDetailId,
-                    SOD.CarrierTrackingNumber,
-                    SOD.OrderQty,
-                    SOD.ProductID,
-                    P.Name AS ProductName,
-                    SOD.SpecialOfferId,
-                    SOD.UnitPrice,
-                    SOD.UnitPriceDiscount,
-                    SOD.LineTotal,
-                    SOD.ModifiedDate
-                FROM [AdventureWorks2016Test].[Sales].[SalesOrderDetail] AS SOD
-                JOIN [AdventureWorks2016Test].[Production].[Product] AS P
-                    ON SOD.ProductID = P.ProductID
-                WHERE SOD.SalesOrderId = {id}
-            ";
+            if (id <= 0)
+            {
+                return BadRequest("Invalid Sales Order ID.");
+            }
+
+            var details = await _context.SalesOrderDetails
+                    .Join(_context.Products,
+                        sod => sod.ProductID,
+                        p => p.ProductID,
+                        (sod, p)=> new {
+                            sod.SalesOrderID,
+                            sod.SalesOrderDetailID,
+                            sod.CarrierTrackingNumber,
+                            sod.OrderQty,
+                            sod.ProductID,
+                            ProductName = p.Name,
+                            sod.SpecialOfferID,
+                            sod.UnitPrice,
+                            sod.UnitPriceDiscount,
+                            sod.LineTotal,
+                            sod.ModifiedDate
+                        }
+                    ).Where(sod => sod.SalesOrderID == id)
+                    .ToListAsync();
 
 
-
-
-            var headers = await _context.Set<SalesOrderDetail>()
-                                        .FromSqlRaw(sqlQuery)
-                                        .AsNoTracking()    
-                                        .ToListAsync();
-
-            return Ok(headers);
+            return Ok(details);
 
         }
 
@@ -191,20 +180,11 @@ namespace SalesApi.Controllers
         [HttpGet("products")]
         public async Task<ActionResult> GetProducts()
         {
-            string sqlQuery = $@"
-                SELECT TOP 10
-                    *
-                FROM [AdventureWorks2016].[Production].[Product]
-                WHERE standardCost > 0 AND ProductID > 680;
-            ";
-
-
-
-
-            var products = await _context.Set<Product>()
-                                        .FromSqlRaw(sqlQuery)
-                                        .AsNoTracking()    
-                                        .ToListAsync();
+          
+            var products = await _context.Products
+            .Where(p => p.StandardCost > 0 && p.ProductID > 680)
+            .Take(100)
+            .ToListAsync();
 
             return Ok(products);
 
@@ -215,26 +195,22 @@ namespace SalesApi.Controllers
         {
 
 
-            string sqlQuery = $@"
-                SELECT TOP 100
-                    SC.CustomerID,
-                    SC.PersonID,
-                    P.FirstName AS Name,
-                    SC.ModifiedDate
-                FROM [AdventureWorks2016].[Sales].[Customer] AS SC
-                JOIN [AdventureWorks2016].[Person].[Person] AS P
-                    ON SC.PersonID = P.BusinessEntityID
-            ";
+            var customers = await _context.Customers
+                        .Join(_context.Persons, 
+                            customer => customer.PersonID,
+                            person => person.BusinessEntityID,
+                            (customer, person) => new{
+                                customer.CustomerID,
+                                customer.PersonID,
+                                Name = person.FirstName,
+                                ModifiedDate = customer.ModifiedDate
+                            })
+                            .Take(100)
+                            .ToListAsync();
+                            
 
 
-
-
-            var products = await _context.Set<SaleCustomer>()
-                                        .FromSqlRaw(sqlQuery)
-                                        .AsNoTracking()    
-                                        .ToListAsync();
-
-            return Ok(products);
+            return Ok(customers);
 
         }
 
