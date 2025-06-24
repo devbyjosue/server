@@ -6,7 +6,9 @@ using RolesApi.Services;
 using RolesApi.Services.Interfaces;
 using MenuApi.Services;
 using MenuApi.Services.Interfaces;
-using Microsoft.AspNetCore.Authentication.Negotiate;
+using Microsoft.AspNetCore.Authentication.Negotiate; // Import the Negotiate namespace
+using Microsoft.AspNetCore.Authorization; // Import the Authorization namespace
+using Microsoft.AspNetCore.Http;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,6 +44,12 @@ builder.Services.AddDbContext<ServerDbContext>(options =>
 
 builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme)
     .AddNegotiate();
+
+builder.Services.AddHttpContextAccessor();
+// builder.Services.AddHttpsRedirection(options =>
+// {
+//     options.HttpsPort = 7216; 
+// });
 
 var app = builder.Build();
 

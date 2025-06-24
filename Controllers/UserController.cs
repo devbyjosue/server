@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using UserApi.Services;
 using Microsoft.AspNetCore.Cors;
 using UserApi.Dto;
+using System.Security.Claims;
 
 
 namespace UserApi.Controllers
@@ -28,9 +29,10 @@ namespace UserApi.Controllers
         [HttpGet]
         public async Task<ActionResult<List<UserDto>>> GetUsers()
         {
-            string username = HttpContext.User.Identity.Name;
+            var UserId = HttpContext.User.Identity.Name;
+            // string vBadge = UserId.Remove(0, 4);
 
-            Console.WriteLine($"Authenticated user: {username}");
+            Console.WriteLine($"Authenticated user: {UserId}");
 
             var users = await _userServices.GetUsers();
             return Ok(users);
